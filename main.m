@@ -1,4 +1,8 @@
 % Script for 223 Design Project
+
+%% Housekeeping
+clear all; close all;
+
 %% Solid Constants
 Rho = 2585; %kg/m3
 Cp = 770; %J/kgC

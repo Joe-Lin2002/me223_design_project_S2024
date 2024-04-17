@@ -22,6 +22,7 @@ Mu = 2.139*10^-5;
 Rhofl = 0.9718;
 kfl = 0.03024;
 Cpfl = 1008;
+
 % saturated water, saturated refrigerant, saturated ammonia, saturated ammonia, liquid metals
 %% T(r) < 180 C , alpha < 10 micrometers
 syms h egen
@@ -34,7 +35,7 @@ h = vpasolve(Nu)
 eqn = (-(egen/k)*(R^2/6)) + Tinf + ((egen*R)/(3*h))+((egen*R^2)/(6*k)) == 160;
 egen = vpasolve(eqn)
 SigmaTheta = (2*a*E)/(1-v)*(1/5)*(egen*R^2)/(6*k);
-if SigmaTheta > SigmaAllow
+if SigmaTheta < SigmaAllow
     disp('safe')
 else
     disp('fail')

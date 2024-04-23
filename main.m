@@ -7,10 +7,10 @@ clear all; close all;
 Rho = 2585; %kg/m3
 Cp = 770; %J/kgC
 k = 0.63; %W/mC
-E = 47.29; %GPa
+E = 47.29e+9; %GPa
 v = 0.253; 
 a = 133.6*10^-7; %1/K
-Kc = 0.480; %MPa/sqrt(m)
+Kc = 0.480e+6; %MPa/sqrt(m)
 Tf = 461; %C
 %egen = 1;
 Tinf = 20; %C
@@ -20,10 +20,10 @@ alpha = 10*10^-6; %m
 %% Fluid Constants
 
 % Air (0.09)
-% Mu = 2.139*10^-5; 
-% Rhofl = 0.9718;
-% kfl = 0.03024;
-% Cpfl = 1008;
+Mu = 1.528*10^-5; 
+Rhofl = 1.204;
+kfl = 0.02514;
+Cpfl = 1007;
 
 % Water (18.24)
 % Mu = 1.002e-3; 
@@ -72,7 +72,7 @@ Nu = (h*D)/kfl == 2 + 0.6*(Re)^0.5*Pr^(1/3);
 h = vpasolve(Nu);
 eqn = (-(egen/k)*(R^2/6)) + Tinf + ((egen*R)/(3*h))+((egen*R^2)/(6*k)) == 160;
 egen = vpasolve(eqn);
-SigmaTheta = (2*a*E)/(1-v)*(1/5)*(egen*R^2)/(6*k)
+SigmaTheta = (2*a*E)/(1-v)*(1/5)*(egen*R^2)/(6*k)*(-1+2) %Function thing to be modify
 if SigmaTheta < SigmaAllow
     disp('safe')
 else

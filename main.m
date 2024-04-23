@@ -7,28 +7,28 @@ clear all; close all;
 Rho = 2585; %kg/m3
 Cp = 770; %J/kgC
 k = 0.63; %W/mC
-E = 47.29e+9; %GPa
+E = 47.29e+9; %Pa
 v = 0.253; 
-a = 133.6*10^-7; %1/K
-Kc = 0.480e+6; %MPa/sqrt(m)
+a = 133.6e-7; %1/K
+Kc = 0.480e+6; %Pa/sqrt(m)
 Tf = 461; %C
 %egen = 1;
 Tinf = 20; %C
 D = 0.1; %m
 R = D/2; %m
-alpha = 10*10^-6; %m
-%% Fluid Constants
+alpha = 10e-6; %m
+%% Fluid Properties
 % Air (0.09)
-% Mu = 1.528*10^-5; 
-% Rhofl = 1.204;
-% kfl = 0.02514;
-% Cpfl = 1007;
+Mu = 1.528*10^-5; 
+Rhofl = 1.204;
+kfl = 0.02514;
+Cpfl = 1007;
 
 % Water (18.24)
-Mu = 1.002e-3; 
-Rhofl = 998;
-kfl = 0.598;
-Cpfl = 4182;
+% Mu = 1.002e-3;
+% Rhofl = 998;
+% kfl = 0.598;
+% Cpfl = 4182;
 
 % R-134a (4.97)
 % Mu = 2.142e-4; 
@@ -62,20 +62,25 @@ Cpfl = 4182;
 
 % saturated water, saturated refrigerant, saturated ammonia, saturated ammonia, liquid metals
 %% T(r) < 180 C , alpha < 10 micrometers
-syms h egen
-Pr = (Mu*Cpfl)/kfl;
-SigmaAllow = (Kc/(1.12*sqrt(pi*alpha)))/3; 
-U = 20; 
-Re = (Rhofl*U*D)/Mu;
-Nu = (h*D)/kfl == 2 + 0.6*(Re)^0.5*Pr^(1/3);
-h = vpasolve(Nu);
-eqn = (-(egen/k)*(R^2/6)) + Tinf + ((egen*R)/(3*h))+((egen*R^2)/(6*k)) == 160;
-egen = vpasolve(eqn);
-SigmaTheta = (2*a*E)/(1-v)*(1/5)*(egen*R^2)/(6*k)*(-1+2) %Function thing to be modify
-if SigmaTheta < SigmaAllow
-    disp('safe')
-else
-    disp('fail')
+count = 1;
+
+for U=0:10:200
+    U = 10;
+    syms h egen
+    Pr = (Mu*Cpfl)/kfl;
+    SigmaAllow = (Kc/(1.12*sqrt(pi*alpha)))/3;
+    Re = (Rhofl*U*D)/Mu;
+    Nu = (h*D)/kfl == 2 + 0.6*(Re)^0.5*Pr^(1/3);
+    h = vpasolve(Nu);
+    eqn = (-(egen/k)*(R^2/6)) + Tinf + ((egen*R)/(3*h))+((egen*R^2)/(6*k)) == 160;
+    egen = vpasolve(eqn);
+    SigmaTheta = double(((2*a*E)/(1-v))*(1/5)*((egen*R^2)/(6*k))); %Function thing to be modify
+    if SigmaTheta < SigmaAllow
+        disp('safe')
+        stress(count) = SigmaTheta;
+    else
+        disp('fail')
+        stress(count) = NaN;
+    end
+    count = count+1;
 end
-
-
